@@ -34,7 +34,7 @@ void drawGrid(Grid& grid) {
     std::cout << std::setw(3) << "";
   for (size_t i = 1; i <= numCols; i++) {
     std::cout
-      << escape("[" + std::to_string(31 + (i / 10) % 6) + "m")
+      << escape("[" + std::to_string(31 + i / 10) + "m")
       << i % 10 << reset;
   }
   std::cout << std::endl;
@@ -42,7 +42,7 @@ void drawGrid(Grid& grid) {
   for (size_t i = 0; i < numRows; i++) {
     // draw row index
       std::cout
-      << escape("[" + std::to_string(31 + ((i + 1) / 10) % 6) + "m") // color depends on row number
+      << escape("[" + std::to_string(31 + (i + 1) / 10) + "m")
       << std::setw(2) << i + 1 << " " << reset;
 
     for (size_t j = 0; j < numCols; j++) {
