@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
   std::cout
     << std::endl
     << "hjkl: left, down, up, right\n"
+    << "yuio: quick movement\n"
     << "d: dig\n"
     << "f: flag\n"
     << "q: quit";
@@ -109,6 +110,76 @@ int main(int argc, char *argv[]) {
       std::cout << saveCursor;
       drawCellStatus(cell, row - 2, column - 4, rows);
       std::cout << restoreCursor;
+
+      continue;
+    }
+
+    // quick movement - move to next revealed cell
+    if (c == 'o') { // left
+      int row, column;
+      parsePosition(getCursorPosition(), row, column);
+      
+      row -= 2;
+      column -= 4;
+
+      if (column >= cols - 1) { continue; }
+
+      int moveCount = -1;
+      for (int i = column; i < cols && grid(row, i).isRevealed(); i++, moveCount++) {}
+      if (moveCount == -1) { moveCount = 1; }
+
+      std::cout << escape("[" + std::to_string(moveCount) + "C");
+
+      continue;
+    }
+    if (c == 'y') { // right
+      int row, column;
+      parsePosition(getCursorPosition(), row, column);
+      
+      row -= 2;
+      column -= 4;
+
+      if (column <= 0) { continue; }
+
+      int moveCount = -1;
+      for (int i = column; i >= 0 && grid(row, i).isRevealed(); i--, moveCount++) {}
+      if (moveCount == -1) { moveCount = 1; }
+
+      std::cout << escape("[" + std::to_string(moveCount) + "D");
+
+      continue;
+    }
+    if (c == 'u') { // up
+      int row, column;
+      parsePosition(getCursorPosition(), row, column);
+      
+      row -= 2;
+      column -= 4;
+
+      if (row >= rows - 1) { continue; }
+
+      int moveCount = -1;
+      for (int i = row; i < rows && grid(i, column).isRevealed(); i++, moveCount++) {}
+      if (moveCount == -1) { moveCount = 1; }
+
+      std::cout << escape("[" + std::to_string(moveCount) + "B");
+
+      continue;
+    }
+    if (c == 'i') { // down
+      int row, column;
+      parsePosition(getCursorPosition(), row, column);
+      
+      row -= 2;
+      column -= 4;
+
+      if (row <= 0) { continue; }
+
+      int moveCount = -1;
+      for (int i = row; i >= 0 && grid(i, column).isRevealed(); i--, moveCount++) {}
+      if (moveCount == -1) { moveCount = 1; }
+
+      std::cout << escape("[" + std::to_string(moveCount) + "A");
 
       continue;
     }
@@ -224,7 +295,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  std::cout << "\x1b[" << rows + 7 << ";1H"; // +7 to move past controls
+  std::cout << "\x1b[" << rows + 8 << ";1H"; // +8 to move past controls
   std::cout << (win ? quit ? "game ended" : "you win" : "you lose")<< std::endl;
   resetTermios();
 
